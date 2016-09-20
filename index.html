@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>New York Air Quality Measurements</title>
+  <meta charset="utf-8">
+  <meta name="description" content="New York Air Quality Measurements">
+  <meta name="author" content="Seungyoon Lee">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>New York Air Quality Measurements</h1>
+    <h2>coursera data product course project</h2>
+    <p>Seungyoon Lee<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>basic concept</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>the built-in [R] airquality data set has Ozone data with Solar, Wind and Temperatere From May 1, 1973 to Sep 30, 1973.</li>
+<li>the Shiny app will load that data set and plot the Ozone data per Wind or Temperature, and provide the trend line of the corrected data by the selection.</li>
+<li>Selecting the variable from left drop box will pick the x-axis to draw Ozone value per the selection.
+
+<ul>
+<li>selecting Wind from the left drop box will give plot of Ozone ~ Wind</li>
+<li>seleting Temperate from the left drop box will plot of Ozone ~ Temp</li>
+</ul></li>
+<li>Checking the box for trend will draw trend line on top of above plot</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>airqualiry data set</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Daily air quality measurements in New York, May to September 1973. A built-in data frame with 154 observations on 6 variables. Here are the few of the data.</p>
+
+<pre><code class="r">head(airquality)
+</code></pre>
+
+<pre><code>##   Ozone Solar.R Wind Temp Month Day
+## 1    41     190  7.4   67     5   1
+## 2    36     118  8.0   72     5   2
+## 3    12     149 12.6   74     5   3
+## 4    18     313 11.5   62     5   4
+## 5    NA      NA 14.3   56     5   5
+## 6    28      NA 14.9   66     5   6
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Ui.R</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Ui.R has four elements, title, plotly output which calculated and updated from Server.R, two user inputs - drop box for x-axis and check box for trend line and text output for brief descriptio of the app.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Server.R</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Server.R will perform the data set calculation based on user selection, for example, below cleaned up data set for Temperature case will be generated for its plotting.</li>
+</ul>
+
+<pre><code class="r">temp &lt;- airquality[, c(&quot;Temp&quot;, &quot;Ozone&quot;)]
+completeDf &lt;- temp[complete.cases(temp),] ## get data set with removal of NA
+meanDf &lt;- aggregate(completeDf[,2], list(completeDf$Temp), mean) ## get mean by Temp
+freqDf &lt;- as.data.frame(table(completeDf$Temp)) ## get frequency of Temp
+cdf &lt;- merge(meanDf, freqDf, by.x=&quot;Group.1&quot;, by.y=&quot;Var1&quot;) ## merge
+colnames(cdf) &lt;- c(&quot;Temp&quot;, &quot;Ozone&quot;, &quot;Freq&quot;)
+head(cdf, n=5) 
+</code></pre>
+
+<pre><code>##   Temp    Ozone Freq
+## 1   57  6.00000    1
+## 2   58 18.00000    1
+## 3   59 10.00000    2
+## 4   61 14.66667    3
+## 5   62 14.50000    2
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='basic concept'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='airqualiry data set'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Ui.R'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Server.R'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
